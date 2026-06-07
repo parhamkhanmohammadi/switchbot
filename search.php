@@ -1,370 +1,491 @@
 <?php
-if(!file_exists("baseInfo.php") || !file_exists("config.php")){
-    form("فایل های مورد نیاز یافت نشد");
+// error_reporting(0); // Uncomment for production
+date_default_timezone_set('Asia/Tehran');
+
+// --- Required Files Check ---
+if (!file_exists("baseInfo.php") || !file_exists("config.php")) {
+    form("خطای سیستمی: فایل‌های مورد نیاز یافت نشدند. لطفاً با پشتیبانی تماس بگیرید.");
     exit();
 }
-
 require "baseInfo.php";
 require "config.php";
 include "jdf.php";
 
+// --- Main Logic ---
+if (isset($_REQUEST['id'])) {
+    $config_link_raw = trim($_REQUEST['id']);
+    
+    if (preg_match('/^vmess:\/\/(.*)/', $config_link_raw, $match)) {
+        $jsonDecode = json_decode(base64_decode($match[1]), true);
+        $config_link = $jsonDecode['id'] ?? '';
+    } elseif (preg_match('/^vless:\/\/([a-f0-9-]{36})/', $config_link_raw, $match)) {
+        $config_link = $match[1];
+    } elseif (preg_match('/^trojan:\/\/([a-f0-9-]{36})/', $config_link_raw, $match)) {
+        $config_link = $match[1];
+    } else {
+        $config_link = $config_link_raw;
+    }
 
-if(isset($_REQUEST['id'])){
-    $config_link = $_REQUEST['id'];
-
-    if(preg_match('/^vmess:\/\/(.*)/',$config_link,$match)){
-        $jsonDecode = json_decode(base64_decode($match[1]),true);
-        $connectionLink = $config_link;
-        $marzbanText = $match[1];
-        $config_link = $jsonDecode['id'];
-    }elseif(preg_match('/^vless:\/\/(.*?)\@/',$config_link,$match)){
-        $connectionLink = $config_link;
-        $marzbanText = $config_link = $match[1];
-    }elseif(preg_match('/^trojan:\/\/(.*?)\@/',$config_link,$match)){
-        $connectionLink = $config_link;
-        $marzbanText = $config_link = $match[1];
-    }elseif(!preg_match('/[a-f0-9]{8}\-[a-f0-9]{4}\-4[a-f0-9]{3}\-(8|9|a|b)[a-f0-9]{3}\-[a-f0-9]{12}/', $config_link)
-        && !(preg_match('/^[a-zA-Z0-9]{5,15}/',$config_link))){
-        form("متن وارد شده معتبر نمی باشد");
+    if (!preg_match('/[a-f0-9]{8}\-[a-f0-9]{4}\-4[a-f0-9]{3}\-(8|9|a|b)[a-f0-9]{3}\-[a-f0-9]{12}/', $config_link) && !(preg_match('/^[a-zA-Z0-9]{5,15}/', $config_link)) && !(preg_match('/^vmess/', $config_link_raw))) {
+        form("لینک یا شناسه وارد شده معتبر نمی‌باشد. لطفاً مجدداً بررسی کنید.");
         exit();
     }
-    $config_link = htmlspecialchars(stripslashes(trim($config_link)));
+    
+    $config_link = htmlspecialchars(stripslashes($config_link));
 
     $stmt = $connection->prepare("SELECT * FROM `server_config`");
     $stmt->execute();
     $serversList = $stmt->get_result();
     $stmt->close();
     $found = false;
-    $isMarzban = false;
-    while($row = $serversList->fetch_assoc()){
+    
+    while ($row = $serversList->fetch_assoc()) {
         $serverId = $row['id'];
         $serverType = $row['type'];
-        
-        if($serverType == "marzban"){
-            $usersList = getMarzbanJson($serverId)->users;
-            if(strstr(json_encode($usersList, JSON_UNESCAPED_UNICODE), $marzbanText) && !empty($marzbanText)){
+
+        if ($serverType == "marzban") {
+             $response = getMarzbanUser($config_link_raw, $serverId);
+            if(isset($response->username)){
+                $config = $response;
                 $found = true;
-                $isMarzban = true;
-                
-                foreach($usersList as $key => $config){
-                    if(strstr(json_encode($config->links, JSON_UNESCAPED_UNICODE), $marzbanText)){
-                	    $remark = $config->username;
-                        $total = $config->data_limit!=0?sumerize($config->data_limit):"نامحدود";
-                        $totalUsed = sumerize($config->used_traffic);
-                        $state = $config->status == "active"?$buttonValues['active']:$buttonValues['deactive'];
-                        $expiryTime = $config->expire != 0?jdate("Y-m-d H:i:s",$config->expire):"نامحدود";
-                        $leftMb = $config->data_limit!=0?$config->data_limit - $config->used_traffic:"نامحدود";
-                        
-                        if(is_numeric($leftMb)){
-                            if($leftMb<0) $leftMb = 0;
-                            else $leftMb = sumerize($leftMb);
-                        }
-                        
-                        $expiryDay = $config->expire != 0?
-                            floor(
-                                ($config->expire - time())/(60 * 60 * 24)
-                                ):
-                                "نامحدود";    
-                        if(is_numeric($expiryDay)){
-                            if($expiryDay<0) $expiryDay = 0;
-                        }
-                        break;
-                    }
-                }
+                $remark = $config->username;
+                $total = $config->data_limit;
+                $totalUsed = $config->used_traffic;
+                $state = $config->status == "active" ? "فعال 🟢" : "غیرفعال 🔴";
+                $expiryTime = $config->expire != 0 ? jdate("Y-m-d H:i:s", $config->expire) : "نامحدود";
+                $leftMb = $total != 0 ? $total - $totalUsed : 0;
+                if ($leftMb < 0) $leftMb = 0;
+                $expiryDay = $config->expire != 0 ? floor(($config->expire - time()) / (60 * 60 * 24)) : "نامحدود";
+                if (is_numeric($expiryDay) && $expiryDay < 0) $expiryDay = 0;
                 break;
             }
-        }else{
+        } else {
             $response = getJson($serverId);
-            if($response->success){
-                $list = json_encode($response->obj);
-    
-                if(strpos($list, $config_link)){
+            if ($response && $response->success) {
+                $list = $response->obj;
+                $foundClient = null;
+
+                foreach ($list as $client) {
+                    $settings = json_decode($client->settings, true);
+                    if (isset($settings['clients'])) {
+                        foreach ($settings['clients'] as $user) {
+                            if (isset($user['id']) && $user['id'] == $config_link) {
+                                $foundClient = $client;
+                                $clientStats = $client->clientStats ?? [];
+                                $email = $user['email'];
+                                $userStats = null;
+                                foreach($clientStats as $stat){
+                                    if($stat->email == $email){
+                                        $userStats = $stat;
+                                        break;
+                                    }
+                                }
+                                $remark = $user['email'] ?? 'N/A';
+                                $total = $userStats->total ?? $client->total;
+                                $upload = $userStats->up ?? 0;
+                                $download = $userStats->down ?? 0;
+                                $totalUsed = $upload + $download;
+                                $expiryTimeValue = $userStats->expiryTime ?? $client->expiryTime;
+                                $state = ($userStats->enable ?? $client->enable) ? "فعال 🟢" : "غیر فعال 🔴";
+                                break 2;
+                            }
+                        }
+                    } else if (isset($client->remark) && str_contains($client->settings, $config_link)) {
+                         $foundClient = $client;
+                         $remark = $client->remark;
+                         $total = $client->total;
+                         $upload = $client->up;
+                         $download = $client->down;
+                         $totalUsed = $upload + $download;
+                         $expiryTimeValue = $client->expiryTime;
+                         $state = $client->enable ? "فعال 🟢" : "غیر فعال 🔴";
+                         break;
+                    }
+                }
+
+                if ($foundClient) {
                     $found = true;
-                    $list = $response->obj;
-                    if(!isset($list[0]->clientStats)){
-                        foreach($list as $keys=>$packageInfo){
-                            if(strpos($packageInfo->settings, $config_link)!=false){
-                                $remark = $packageInfo->remark;
-                                $upload = sumerize2($packageInfo->up);
-                                $download = sumerize2($packageInfo->down);
-                                $state = $packageInfo->enable == true?"فعال 🟢":"غیر فعال 🔴";
-                                $totalUsed = sumerize2($packageInfo->up + $packageInfo->down);
-                                $total = $packageInfo->total!=0?sumerize2($packageInfo->total):"نامحدود";
-                                $expiryTime = $packageInfo->expiryTime != 0?jdate("Y-m-d H:i:s",substr($packageInfo->expiryTime,0,-3)):"نامحدود";
-                                $leftMb = $packageInfo->total!=0?sumerize2($packageInfo->total - $packageInfo->up - $packageInfo->down):"نامحدود";
-                                $expiryDay = $packageInfo->expiryTime != 0?
-                                    floor(
-                                        (substr($packageInfo->expiryTime,0,-3)-time())/(60 * 60 * 24))
-                                    :
-                                    "نامحدود";
-                                if(is_numeric($expiryDay)){
-                                    if($expiryDay<0) $expiryDay = 0;
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    else{
-                        $keys = -1;
-                        $settings = array_column($list,'settings');
-                        foreach($settings as $key => $value){
-                            if(strpos($value, $config_link)!= false){
-                                $keys = $key;
-                                break;
-                            }
-                        }
-                        if($keys == -1){
-                            $found = false;
-                            break;
-                        }
-                        $clientsSettings = json_decode($list[$keys]->settings,true)['clients'];
-                        if(!is_array($clientsSettings)){
-                            form("با عرض پوزش، متأسفانه مشکلی رخ داده است، لطفا مجدد اقدام کنید");
-                            exit();
-                        }
-                        $settingsId = array_column($clientsSettings,'id');
-                        $settingKey = array_search($config_link,$settingsId);
-    
-                        if(!isset($clientsSettings[$settingKey]['email'])){
-                            $packageInfo = $list[$keys];
-                            $remark = $packageInfo->remark;
-                            $upload = sumerize2($packageInfo->up);
-                            $download = sumerize2($packageInfo->down);
-                            $state = $packageInfo->enable == true?"فعال 🟢":"غیر فعال 🔴";
-                            $totalUsed = sumerize2($packageInfo->up + $packageInfo->down);
-                            $total = $packageInfo->total!=0?sumerize2($packageInfo->total):"نامحدود";
-                            $expiryTime = $packageInfo->expiryTime != 0?jdate("Y-m-d H:i:s",substr($packageInfo->expiryTime,0,-3)):"نامحدود";
-                            $leftMb = $packageInfo->total!=0?sumerize2($packageInfo->total - $packageInfo->up - $packageInfo->down):"نامحدود";
-                            if(is_numeric($leftMb)){
-                                if($leftMb<0){
-                                    $leftMb = 0;
-                                }else{
-                                    $leftMb = sumerize2($packageInfo->total - $packageInfo->up - $packageInfo->down);
-                                }
-                            }
-    
-    
-                            $expiryDay = $packageInfo->expiryTime != 0?
-                                floor(
-                                    (substr($packageInfo->expiryTime,0,-3)-time())/(60 * 60 * 24)
-                                ):
-                                "نامحدود";
-                            if(is_numeric($expiryDay)){
-                                if($expiryDay<0) $expiryDay = 0;
-                            }
-                        }else{
-                            $email = $clientsSettings[$settingKey]['email'];
-                            $clientState = $list[$keys]->clientStats;
-                            $emails = array_column($clientState,'email');
-                            $emailKey = array_search($email,$emails);
-                            if($clientState[$emailKey]->total != 0 || $clientState[$emailKey]->up != 0  ||  $clientState[$emailKey]->down != 0 || $clientState[$emailKey]->expiryTime != 0){
-                                $upload = sumerize2($clientState[$emailKey]->up);
-                                $download = sumerize2($clientState[$emailKey]->down);
-                                $total = $clientState[$emailKey]->total==0 && $list[$keys]->total !=0?$list[$keys]->total:$clientState[$emailKey]->total;
-                                $leftMb = $total!=0?($total - $clientState[$emailKey]->up - $clientState[$emailKey]->down):"نامحدود";
-                                if(is_numeric($leftMb)){
-                                    if($leftMb<0){
-                                        $leftMb = 0;
-                                    }else{
-                                        $leftMb = sumerize2($total - $clientState[$emailKey]->up - $clientState[$emailKey]->down);
-                                    }
-                                }
-                                $totalUsed = sumerize2($clientState[$emailKey]->up + $clientState[$emailKey]->down);
-                                $total = $total!=0?sumerize2($total):"نامحدود";
-                                $expTime = $clientState[$emailKey]->expiryTime == 0 && $list[$keys]->expiryTime?$list[$keys]->expiryTime:$clientState[$emailKey]->expiryTime;
-                                $expiryTime = $expTime != 0?jdate("Y-m-d H:i:s",substr($expTime,0,-3)):"نامحدود";
-                                $expiryDay = $expTime != 0?
-                                    floor(
-                                        ((substr($expTime,0,-3)-time())/(60 * 60 * 24))
-                                    ):
-                                    "نامحدود";
-                                if(is_numeric($expiryDay)){
-                                    if($expiryDay<0) $expiryDay = 0;
-                                }
-                                $state = $clientState[$emailKey]->enable == true?"فعال 🟢":"غیر فعال 🔴";
-                                $remark = $email;
-                            }
-                            elseif($list[$keys]->total != 0 || $list[$keys]->up != 0  ||  $list[$keys]->down != 0 || $list[$keys]->expiryTime != 0){
-                                $upload = sumerize2($list[$keys]->up);
-                                $download = sumerize2($list[$keys]->down);
-                                $leftMb = $list[$keys]->total!=0?($list[$keys]->total - $list[$keys]->up - $list[$keys]->down):"نامحدود";
-                                if(is_numeric($leftMb)){
-                                    if($leftMb<0){
-                                        $leftMb = 0;
-                                    }else{
-                                        $leftMb = sumerize2($list[$keys]->total - $list[$keys]->up - $list[$keys]->down);
-                                    }
-                                }
-                                $totalUsed = sumerize2($list[$keys]->up + $list[$keys]->down);
-                                $total = $list[$keys]->total!=0?sumerize2($list[$keys]->total):"نامحدود";
-                                $expiryTime = $list[$keys]->expiryTime != 0?jdate("Y-m-d H:i:s",substr($list[$keys]->expiryTime,0,-3)):"نامحدود";
-                                $expiryDay = $list[$keys]->expiryTime != 0?
-                                    floor(
-                                        ((substr($list[$keys]->expiryTime,0,-3)-time())/(60 * 60 * 24))
-                                    ):
-                                    "نامحدود";
-                                if(is_numeric($expiryDay)){
-                                    if($expiryDay<0) $expiryDay = 0;
-                                }
-                                $state = $list[$keys]->enable == true?"فعال 🟢":"غیر فعال 🔴";
-                                $remark = $list[$keys]->remark;
-                            }
-                        }
-                    }
+                    $leftMb = $total != 0 ? $total - $totalUsed : 0;
+                    if ($leftMb < 0) $leftMb = 0;
+                    $expiryTime = $expiryTimeValue != 0 ? jdate("Y-m-d H:i:s", substr($expiryTimeValue, 0, -3)) : "نامحدود";
+                    $expiryDay = $expiryTimeValue != 0 ? floor((substr($expiryTimeValue, 0, -3) - time()) / (60 * 60 * 24)) : "نامحدود";
+                    if (is_numeric($expiryDay) && $expiryDay < 0) $expiryDay = 0;
                     break;
                 }
             }
         }
     }
-    if(!$found){
-        form("اطلاعات وارد شده اشتباه می باشد",$cancelKey);
-    }else{
+    
+    if (!$found) {
+        form("سرویسی با این مشخصات یافت نشد یا لینک شما منقضی شده است.");
+    } else {
         showForm("configInfo");
     }
-}
-else{
+} else {
     showForm("unknown");
 }
 ?>
+
 <?php
-function showForm($type){
-    global $remark, $isMarzban, $totalUsed, $state, $upload, $download, $total, $leftMb, $expiryTime, $expiryDay;
+function showForm($type)
+{
+    global $remark, $state, $total, $totalUsed, $leftMb, $expiryTime, $expiryDay;
     ?>
-    <html lang="en">
+    <!DOCTYPE html>
+    <html lang="fa" dir="rtl">
     <head>
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width">
-        <title><?php if($type=="unknown") echo "جستجوی اطلاعات کانفیگ";
-            elseif ($type=="id") echo "نتیجه اطلاعات کانفیگ";
-            ?></title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link type="text/css" href="assets/webconf.css" rel="stylesheet" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            <?php if ($type == "unknown") echo "استعلام سرویس | SWITCH VP";
+            else echo "وضعیت سرویس | SWITCH VP"; ?>
+        </title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+        
+        <style>
+            :root {
+                --primary-hue: 210;
+                --primary-color: hsl(var(--primary-hue), 100%, 60%);
+                --primary-glow: hsl(var(--primary-hue), 100%, 50%, 0.5);
+                --bg-dark: #0d1117;
+                --bg-light: #161b22;
+                --border-color: #30363d;
+                --text-color: #c9d1d9;
+                --text-secondary: #8b949e;
+                --font-family: 'Vazirmatn', sans-serif;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes chart-animate {
+                from { stroke-dashoffset: 251.2; }
+                to { stroke-dashoffset: var(--chart-offset); }
+            }
+
+            body {
+                font-family: var(--font-family);
+                background-color: var(--bg-dark);
+                color: var(--text-color);
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start; /* Changed to flex-start */
+                min-height: 100vh;
+                padding: 2rem 1rem;
+                box-sizing: border-box;
+                overflow-y: auto; /* Allow vertical scrolling */
+            }
+
+            .main-container {
+                width: 100%;
+                max-width: 500px;
+                background-color: var(--bg-light);
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+                padding: 2.5rem;
+                text-align: center;
+                animation: fadeIn 0.8s ease-out;
+            }
+            
+            .header { margin-bottom: 2rem; }
+            .logo {
+                width: 80px; height: 80px; margin: 0 auto 1.5rem;
+                background: linear-gradient(135deg, var(--primary-color), hsl(var(--primary-hue), 80%, 70%));
+                color: white; display: flex; justify-content: center; align-items: center;
+                font-size: 2.5rem; font-weight: 800; border-radius: 50%;
+                box-shadow: 0 0 25px var(--primary-glow);
+            }
+            .header h1 { margin: 0; font-size: 2rem; font-weight: 700; color: #fff; }
+            .header p { margin-top: 0.5rem; color: var(--text-secondary); font-size: 1rem; }
+
+            /* Search Form */
+            .search-form input {
+                width: 100%; padding: 16px; border: 1px solid var(--border-color); border-radius: 12px;
+                font-family: var(--font-family); font-size: 1rem; text-align: center;
+                transition: all 0.3s; box-sizing: border-box; background: var(--bg-dark); color: var(--text-color);
+            }
+            .search-form input::placeholder { color: var(--text-secondary); }
+            .search-form input:focus {
+                outline: none; border-color: var(--primary-color);
+                box-shadow: 0 0 0 4px hsla(var(--primary-hue), 100%, 60%, 0.3);
+            }
+            .search-form button {
+                width: 100%; padding: 16px; margin-top: 1rem; border: none; border-radius: 12px;
+                background: var(--primary-color); color: white; font-size: 1.1rem; font-weight: 700;
+                cursor: pointer; transition: all 0.3s;
+            }
+            .search-form button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 15px var(--primary-glow);
+            }
+
+            /* Config Info */
+            .info-header { margin-bottom: 2rem; }
+            .info-header .name { font-size: 1.75rem; font-weight: 700; color: #fff; word-break: break-all; margin-bottom: 0.5rem; }
+            .info-header .status { font-size: 1.1rem; font-weight: 500; }
+            
+            .chart-container {
+                position: relative;
+                width: 200px;
+                height: 200px;
+                margin: 2rem auto;
+            }
+            .chart-svg {
+                transform: rotate(-90deg);
+                width: 100%;
+                height: 100%;
+            }
+            .chart-bg, .chart-fg {
+                fill: none;
+                stroke-width: 12;
+            }
+            .chart-bg { stroke: var(--border-color); }
+            .chart-fg {
+                stroke-linecap: round;
+                stroke: var(--primary-color);
+                stroke-dasharray: 251.2;
+                animation: chart-animate 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            }
+            .chart-text {
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+            }
+            .chart-text-value {
+                font-size: 2rem;
+                font-weight: 800;
+                color: #fff;
+            }
+            .chart-text-label {
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+            }
+
+            .info-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            .info-item {
+                background: var(--bg-dark);
+                padding: 1.5rem 1rem;
+                border: 1px solid var(--border-color);
+                border-radius: 16px;
+            }
+            .info-item .label {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+                margin-bottom: 0.75rem;
+            }
+            .info-item .value { font-size: 1.4rem; font-weight: 700; color: #fff; }
+
+            .guides { margin-top: 2.5rem; }
+            .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: #fff; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; display: inline-block; }
+            
+            .guides-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .guide-link {
+                display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+                padding: 1rem; text-decoration: none; color: var(--text-secondary);
+                background: var(--bg-dark); border: 1px solid var(--border-color);
+                border-radius: 12px; transition: all 0.3s;
+                font-weight: 500;
+            }
+            .guide-link:hover {
+                transform: translateY(-3px);
+                border-color: var(--primary-color);
+                background-color: var(--bg-light);
+                color: #fff;
+            }
+            .guide-link svg { flex-shrink: 0; }
+
+            .footer { margin-top: 2.5rem; font-size: 0.9rem; color: #666; }
+            .footer a { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
+        </style>
     </head>
-    <body style="background: <?php if(!isset($state)) echo "#f7f0f5"; elseif($state) echo "#f7f0f5"; elseif(!$state) echo "#FF5733";?>;">
-    <?php if ($type=="configInfo"){
-        $download = $download != 0 && $total != "نامحدود"? round(100 * $download / $total,2):0;
-        $upload = $upload != 0 && $total != "نامحدود"? round(100 * $upload / $total,2):0;
-        $leftMb = $leftMb != "نامحدود" && $total != "نامحدود"?round(100 * $leftMb / $total,2):"100";
-        $totalUsed = $totalUsed != "نامحدود" && $total != "نامحدود"?round(100 * $totalUsed / $total,2):"100";
-        ?>
-        <div class="container" style="">
-            <form id="contact" class="contactw">
-                <br>
-                <p style="font-size:22px;font-weight: bold;color:#1d3557;font-family:iransans !important;"> ( اطلاعات کانفیگ <?php echo $remark;?> ) </p>
-                <p style="font-size:18px;font-weight: bold;color:#1d3557;margin-top:15px;"> وضعیت: <?php echo $state;?> </p>
+    <body>
+    <?php if ($type == "configInfo"):
+        $total_bytes = $total > 0 ? $total : 0;
+        $used_bytes = $totalUsed > 0 ? $totalUsed : 0;
+        
+        $total_gb = $total_bytes / (1024 * 1024 * 1024);
+        $used_gb = $used_bytes / (1024 * 1024 * 1024);
+        $left_gb = ($total_bytes - $used_bytes) / (1024 * 1024 * 1024);
 
-                <br>
-                
-                
-                <div class="mainform" >
-                    
-                    <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="margin-left: 6px;enable-background:new 0 0 512 512;" xml:space="preserve" width="20" height="20">
-                        <g>
-                            <path d="M210.731,386.603c24.986,25.002,65.508,25.015,90.51,0.029c0.01-0.01,0.019-0.019,0.029-0.029l68.501-68.501   c7.902-8.739,7.223-22.23-1.516-30.132c-8.137-7.357-20.527-7.344-28.649,0.03l-62.421,62.443l0.149-329.109   C277.333,9.551,267.782,0,256,0l0,0c-11.782,0-21.333,9.551-21.333,21.333l-0.192,328.704L172.395,288   c-8.336-8.33-21.846-8.325-30.176,0.011c-8.33,8.336-8.325,21.846,0.011,30.176L210.731,386.603z"/>
-                            <path d="M490.667,341.333L490.667,341.333c-11.782,0-21.333,9.551-21.333,21.333V448c0,11.782-9.551,21.333-21.333,21.333H64   c-11.782,0-21.333-9.551-21.333-21.333v-85.333c0-11.782-9.551-21.333-21.333-21.333l0,0C9.551,341.333,0,350.885,0,362.667V448   c0,35.346,28.654,64,64,64h384c35.346,0,64-28.654,64-64v-85.333C512,350.885,502.449,341.333,490.667,341.333z"/>
-                        </g>
-                    </svg>
-                        <p style="font-size:16px"><?php if($isMarzban) echo "حجم دانلود + آپلود"; else echo "حجم دانلود";?></p>
-                        <div class="progress-bar" style="display:flex; background: radial-gradient(closest-side, #F9F9F9 79%, transparent 80% 100%),conic-gradient(<?php if($download <= 50) echo "#04a777 "; elseif($download <= 70 && $download > 50) echo "yellow "; elseif($download > 70) echo "red "; echo $download . "%";?>, #e2eafc 0);">
-                        <?php if($isMarzban) echo $totalUsed . "%"; else echo $download . "%";?></div>
-                    </div>
-                    <?php if(!$isMarzban){?>
-                        <div style="margin-right:50px;">
-                            <svg style="margin-left: 6px" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="20" height="20"><path d="M23.9,11.437A12,12,0,0,0,0,13a11.878,11.878,0,0,0,3.759,8.712A4.84,4.84,0,0,0,7.113,23H16.88a4.994,4.994,0,0,0,3.509-1.429A11.944,11.944,0,0,0,23.9,11.437Zm-4.909,8.7A3,3,0,0,1,16.88,21H7.113a2.862,2.862,0,0,1-1.981-.741A9.9,9.9,0,0,1,2,13,10.014,10.014,0,0,1,5.338,5.543,9.881,9.881,0,0,1,11.986,3a10.553,10.553,0,0,1,1.174.066,9.994,9.994,0,0,1,5.831,17.076ZM7.807,17.285a1,1,0,0,1-1.4,1.43A8,8,0,0,1,12,5a8.072,8.072,0,0,1,1.143.081,1,1,0,0,1,.847,1.133.989.989,0,0,1-1.133.848,6,6,0,0,0-5.05,10.223Zm12.112-5.428A8.072,8.072,0,0,1,20,13a7.931,7.931,0,0,1-2.408,5.716,1,1,0,0,1-1.4-1.432,5.98,5.98,0,0,0,1.744-5.141,1,1,0,0,1,1.981-.286Zm-5.993.631a2.033,2.033,0,1,1-1.414-1.414l3.781-3.781a1,1,0,1,1,1.414,1.414Z"/></svg>
-                            <p style="font-size:16px; font-family:iransans !important;">حجم آپلود</p>
-                            <div class="progress-bar" style="display:flex; background: radial-gradient(closest-side, #F9F9F9 79%, transparent 80% 100%),conic-gradient(<?php if($upload <= 30) echo "#f48c06 "; elseif($upload < 50 && $upload > 30) echo "yellow "; elseif($upload >= 50) echo "#ed254e ";  echo $upload . "%";?>, #e2eafc 0);">
-                            <?php echo $upload . "%";?></div>
-                        </div>
-                    <?php }?>
+        $percent_used = $total_bytes > 0 ? ($used_bytes / $total_bytes) : 0;
+        $chart_offset = 251.2 * (1 - $percent_used);
+        
+        if ($percent_used >= 0.9) $chart_color = 'var(--danger-color)';
+        elseif ($percent_used >= 0.7) $chart_color = 'var(--warning-color)';
+        else $chart_color = 'var(--primary-color)';
+    ?>
+        <div class="main-container">
+            <header class="header">
+                <div class="logo">SV</div>
+                <div class="info-header">
+                    <h1 class="name"><?= htmlspecialchars($remark) ?></h1>
+                    <div class="status">وضعیت: <?= $state ?></div>
                 </div>
-                
-                
-                
-                <div class="mainform" style="margin-top:50px;">
-                    
-                    <div style="margin-left: 6px">
-                        <svg style="margin-left: 6px" xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="20" height="20"><path d="M23.9,11.437A12,12,0,0,0,0,13a11.878,11.878,0,0,0,3.759,8.712A4.84,4.84,0,0,0,7.113,23H16.88a4.994,4.994,0,0,0,3.509-1.429A11.944,11.944,0,0,0,23.9,11.437Zm-4.909,8.7A3,3,0,0,1,16.88,21H7.113a2.862,2.862,0,0,1-1.981-.741A9.9,9.9,0,0,1,2,13,10.014,10.014,0,0,1,5.338,5.543,9.881,9.881,0,0,1,11.986,3a10.553,10.553,0,0,1,1.174.066,9.994,9.994,0,0,1,5.831,17.076ZM7.807,17.285a1,1,0,0,1-1.4,1.43A8,8,0,0,1,12,5a8.072,8.072,0,0,1,1.143.081,1,1,0,0,1,.847,1.133.989.989,0,0,1-1.133.848,6,6,0,0,0-5.05,10.223Zm12.112-5.428A8.072,8.072,0,0,1,20,13a7.931,7.931,0,0,1-2.408,5.716,1,1,0,0,1-1.4-1.432,5.98,5.98,0,0,0,1.744-5.141,1,1,0,0,1,1.981-.286Zm-5.993.631a2.033,2.033,0,1,1-1.414-1.414l3.781-3.781a1,1,0,1,1,1.414,1.414Z"/></svg>
-                        <p style="font-size:16px; font-family:iransans !important;">حجم باقیمانده</p>
-                        <div class="progress-bar" style="display:flex; background: radial-gradient(closest-side, #F9F9F9 79%, transparent 80% 100%),conic-gradient(<?php if($leftMb <= 30) echo "red "; elseif($leftMb < 50 && $leftMb > 30) echo "yellow "; elseif($leftMb >= 50) echo "#ed254e ";  echo $leftMb . "%";?>, #e2eafc 0);">
-                        <?php echo $leftMb . "%";?></div>
-                    </div>
-                    
-                    <div style="margin-right:50px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="20" height="20"><path d="M22.5,18a1.5,1.5,0,0,1-1.061-.44L13.768,9.889a2.5,2.5,0,0,0-3.536,0L2.57,17.551A1.5,1.5,0,0,1,.449,15.43L8.111,7.768a5.505,5.505,0,0,1,7.778,0l7.672,7.672A1.5,1.5,0,0,1,22.5,18Z"/></svg>
-                        <p style="font-size:16px">حجم کلی</p>
-                        <div class="progress-bar" style="display:flex; background: radial-gradient(closest-side, #F9F9F9 79%, transparent 80% 100%),conic-gradient(<?php if($upload <= 50) echo "#467599 "; elseif($upload <= 70 && $upload > 50) echo "#467599 "; elseif($upload > 70) echo "#467599 "; echo $upload . "%";?>, #467599 0);">
-                        <?php echo (is_numeric($total) ? $total . "GB": $total);?></div>
-                    </div>
-    
-                    <!--<div style="margin-right:50px;">-->
-                    <!--    <svg style="margin-left: 6px" id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m23 13a11.01 11.01 0 0 0 -10-10.949v-2.051h-2v2.051a10.977 10.977 0 0 0 -7.062 18.408l-1.928 2.118 1.48 1.346 1.934-2.123a10.916 10.916 0 0 0 13.152 0l1.934 2.126 1.48-1.346-1.928-2.118a10.948 10.948 0 0 0 2.938-7.462zm-11 9a9 9 0 1 1 9-9 9.011 9.011 0 0 1 -9 9z"/><path d="m5.523 1.745-1.067-1.689a15.17 15.17 0 0 0 -4.439 3.955l1.663 1.109a13.144 13.144 0 0 1 3.843-3.375z"/><path d="m22.32 5.12 1.663-1.109a15.17 15.17 0 0 0 -4.439-3.955l-1.067 1.689a13.144 13.144 0 0 1 3.843 3.375z"/><path d="m11 7v5.414l3.293 3.293 1.414-1.414-2.707-2.707v-4.586z"/></svg>-->
-                    <!--    <p style="font-size:16px">تعداد روز باقیمانده</p>-->
-                    <!--    <div class="progress-bar" style="display:flex; background: radial-gradient(closest-side, #F9F9F9 79%, transparent 80% 100%),conic-gradient(#a06cd5 100%, #13293d 0);">-->
-                    <!--    <?php echo $expiryDay . " روز";?></div>-->
-                    <!--</div>-->
+            </header>
+
+            <div class="chart-container">
+                <svg class="chart-svg" viewBox="0 0 100 100">
+                    <circle class="chart-bg" cx="50" cy="50" r="40"></circle>
+                    <circle class="chart-fg" cx="50" cy="50" r="40" style="--chart-offset: <?= $chart_offset ?>; stroke: <?= $chart_color ?>;"></circle>
+                </svg>
+                <div class="chart-text">
+                    <div class="chart-text-value"><?= round($percent_used * 100) ?>%</div>
+                    <div class="chart-text-label">مصرف شده</div>
                 </div>
-        <div class="container">
-                    <p class="tarikh" style="font-size:14px;margin-top:10px">
-                       expireTime: <span><?php echo $expiryTime;?></span>
-                    </p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
+                        <span>مصرف شده</span>
+                    </div>
+                    <div class="value"><?= round($used_gb, 2) ?> GB</div>
                 </div>
-                <p style="font-size:10px">Made with 🖤 in <a target="_blank" href="https://github.com/wizwizdev/wizwizxui-timebot">wizwiz</a></p>
-            </form>
+                <div class="info-item">
+                    <div class="label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7.247 4.86 2.451 10.342c-.64.64.305 1.658 1.183 1.658h9.592a1.002 1.002 0 0 0 .707-1.707l-4.796-5.48a1 1 0 0 0-1.506 0z"/></svg>
+                        <span>باقی‌مانده</span>
+                    </div>
+                    <div class="value"><?= ($total_bytes > 0) ? round($left_gb, 2) . ' GB' : '∞' ?></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2z"/></svg>
+                        <span>روزهای باقی‌مانده</span>
+                    </div>
+                    <div class="value"><?= is_numeric($expiryDay) ? $expiryDay . ' روز' : '∞' ?></div>
+                </div>
+                <div class="info-item">
+                    <div class="label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/><path d="M7.5 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/></svg>
+                        <span>تاریخ انقضا</span>
+                    </div>
+                    <div class="value" style="font-size: 1.1rem;"><?= $expiryTime ?></div>
+                </div>
+            </div>
+
+            <div class="guides">
+                <div class="section-title">راهنمای اتصال</div>
+                <div class="guides-grid">
+                    <a href="https://t.me/SwitchVpGuide/10?single" target="_blank" class="guide-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/><path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>
+                        <span>اندروید</span>
+                    </a>
+                    <a href="https://t.me/SwitchVpGuide/17?single" target="_blank" class="guide-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.393.118 2.394-1.21s.931-2.617.931-2.617zM10.16 6.38c.556.54.452 1.235.424 1.41s-.223.957-.693 1.36c-.47.403-1.137.455-1.32.43s-.922-.192-1.47-.682c-.556-.54-.452-1.235-.424-1.41s.223-.957.693-1.36c.47-.403 1.137-.455 1.32-.43s.922.192 1.47.682z"/><path d="M.087 4.21c.229-2.417 2.135-4.21 4.56-4.21s4.533 1.793 4.533 4.21c0 2.296-1.636 4.21-3.998 4.21a4.534 4.534 0 0 1-1.04-.153A4.346 4.346 0 0 1 3.1 7.21a4.41 4.41 0 0 1-2.229-3.693z"/></svg>
+                        <span>آیفون</span>
+                    </a>
+                    <a href="https://t.me/SwitchVpGuide/25?single" target="_blank" class="guide-link">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M12 1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/><path d="M4 1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"/></svg>
+                        <span>ویندوز</span>
+                    </a>
+                    <a href="https://t.me/SwitchVpGuide/4" target="_blank" class="guide-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+                        <span>نرم‌افزارها</span>
+                    </a>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <p>ارائه شده توسط <b>SWITCH VP</b></p>
+            </footer>
         </div>
 
-    <?php }
-    elseif($type=="unknown"){ ?>
-
-        <div class="container">
-            <form id="contact" action="search.php" method="get">
-                <h3 style="margin:20px">لطفا اطلاعات خواسته شده را وارد کنید</h3>
-                <fieldset>
-                    <input placeholder="لینک اتصال و یا هم uuid کانفیگ را وارد کنید" type="text"  id="id" name="id" autocomplete="off" required >
+    <?php elseif ($type == "unknown"): ?>
+        <div class="main-container">
+            <header class="header">
+                <div class="logo">SV</div>
+                <h1>استعلام وضعیت سرویس</h1>
+                <p>برای مشاهده اطلاعات، لینک یا شناسه کانفیگ خود را وارد کنید.</p>
+            </header>
+            
+            <form class="search-form" action="" method="get">
+                <fieldset style="padding: 0; border: none; margin: 0;">
+                    <input placeholder="لینک یا شناسه کانفیگ..." type="text" id="id" name="id" autocomplete="off" required>
                 </fieldset>
-                <fieldset>
-                    <button class="search" type="submit">جستجو</button>
+                <fieldset style="padding: 0; border: none; margin: 0;">
+                    <button type="submit">جستجو</button>
                 </fieldset>
-                <p style="font-size:13px">Made with 🖤 in <a target="_blank" href="https://github.com/wizwizdev/wizwizxui-timebot">wizwiz</a></p>
             </form>
+            <footer class="footer">
+                <p>ارائه شده توسط <b>SWITCH VP</b></p>
+            </footer>
         </div>
-        <br>
-        <br>
-    <?php } ?>
+    <?php endif; ?>
     </body>
     </html>
     <?php
 }
-function form($msg, $error = true){
-    ?>
 
-    <html dir="rtl">
+function form($msg)
+{
+    ?>
+    <!DOCTYPE html>
+    <html lang="fa" dir="rtl">
     <head>
-        <meta charset="utf-8"><meta name="viewport" content="width=device-width">
-        <title>error</title>
-        <link type="text/css" href="assets/webconf.css" rel="stylesheet" />
-        <meta name="next-head-count" content="4">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>خطا | SWITCH VP</title>
+        <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --danger-color: #e53e3e;
+                --bg-dark: #0d1117;
+                --bg-light: #161b22;
+                --border-color: #30363d;
+                --text-color: #c9d1d9;
+                --font-family: 'Vazirmatn', sans-serif;
+            }
+            body {
+                font-family: var(--font-family); background-color: var(--bg-dark); color: var(--text-color);
+                margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+                padding: 1rem; box-sizing: border-box;
+            }
+            .main-container {
+                width: 100%; max-width: 480px; padding: 2.5rem; background-color: var(--bg-light);
+                border: 1px solid var(--border-color); border-radius: 16px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
+            .error-icon { color: var(--danger-color); margin-bottom: 1.5rem; }
+            .error-message { font-size: 1.2rem; font-weight: 500; margin-bottom: 2rem; line-height: 1.7; color:#fff; }
+            .back-button {
+                display: inline-block; padding: 14px 35px; border: none; border-radius: 12px;
+                background-color: var(--danger-color); color: white; font-size: 1rem; font-weight: 700;
+                cursor: pointer; text-decoration: none; transition: all 0.3s;
+            }
+            .back-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 15px rgba(229, 62, 62, 0.3);
+            }
+        </style>
     </head>
     <body>
-    <div id="__next">
-        <section class="ant-layout1 PayPing-layout1">
-            <main>
-                <div class="justify-center align-center w-100">
-                    <div class="div1">
-                        <div class="div2">
-                            <?php if ($error == true){ ?> <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="PayPing-icon" stroke-width="1" width="100">
-                                <circle cx="12" cy="12" r="11"></circle>
-                                <path d="M15.3 8.7l-6.6 6.6M8.7 8.7l6.6 6.6"></path>
-                            </svg>
-                            <?php }?>
-                            <div style="padding: 40px 30px" > <?php echo $msg ?></div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </section>
-    </div>
+        <div class="main-container">
+            <div class="error-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+            </div>
+            <div class="error-message">
+                <?= htmlspecialchars($msg) ?>
+            </div>
+            <a href="?" class="back-button">بازگشت و تلاش مجدد</a>
+        </div>
     </body>
     </html>
     <?php

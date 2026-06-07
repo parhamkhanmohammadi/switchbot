@@ -1,373 +1,354 @@
 <?php
 
 $mainValues = [
-    'banned' => '❌ | هی بهت گفتم آدم باش گوش نکردی ، الان مسدود شدی 😑😂',
-    'customer_custome_plan_day' => "⏰|لطفا  تعداد روز اشتراکت رو وارد کن\n💰|هزینه هر روز: DAY-PRICE",
-    'customer_custome_plan_volume'=>"🔋|لطفا مقدار گیگابایت سرویست رو وارد کن\n💰|هزینه هر گیگ: VOLUME-PRICE",
-    'customer_custome_plan_name'=>'اسم کانفیگ رو وارد کن ( حروف انگیلیسی و عدد باهم وارد کنید )',
-    'send_user_id'=>"🀄️| آیدی عددی کاربر رو بفرس :",
-    'enter_decrease_amount'=>"💸 | مبلغی که میخوای ازش کم کنی رو وارد کن:",
-    'enter_increase_amount'=>"💸 | مبلغی که میخوای بهش بدی رو وارد کن:",
-    'user_not_found'=>"🥴 | همچین کسی رو نداریما اشتباه وارد کردی به نظرم",
-    'amount_decreased_from_your_wallet'=> "✅ مبلغ AMOUNT تومان از حساب شما کم شد",
-    'amount_decreased_from_user_wallet'=>"✅ مبلغ AMOUNT تومان از کیف پول کاربر مورد نظر کم شد",
-    'increase_wallet_cart_to_cart'=>"♻️ عزیزم یه تصویر از فیش واریزی برام ارسال کن :
+    'banned' => '🚫 | حساب کاربری مسدود شد
 
-🔰 <code>ACCOUNT-NUMBER</code> - HOLDER-NAME
+دسترسی شما به دلیل نقض قوانین سرویس، توسط سیستم مسدود گردید. جهت پیگیری، با تیم پشتیبانی (@SwitchVpSupport) در ارتباط باشید.',
+    'customer_custome_plan_day' => "⏳ | مدت زمان اشتراک مورد نظر (به روز) را وارد کنید:
 
-✅ بعد از اینکه پرداختت تایید شد مبلغ مورد نظر به کیف پولت اضافه میشه!",
-    'order_increase_sent'=>"🥇 سفارش شما با موفقیت ثبت شد.
-    بعد از تایید به کیف پولت اضافه میکنم ... 💞",
-    'please_send_only_image'=>"لطفا فقط عکس ارسال کنید",
-    'reached_main_menu'=>"خب برگشتم عقب اگه کاری داری بگو 😉 | اگه خواستی یکی از گزینه هارو انتخاب کن که کارتو انجام بدم
+💳 | هزینه هر روز: DAY-PRICE تومان",
+    'customer_custome_plan_volume'=>"📦 | حجم ترافیک مورد نظر (به گیگابایت) را وارد کنید:
 
-🚪 /start",
-    'increase_wallet_request_message'=>"💳 درخواست ( افزایش موجودی )
+💳 | هزینه هر گیگابایت: VOLUME-PRICE تومان",
+    'customer_custome_plan_name'=>'✏️ | یک نام اختصاصی برای این سرویس انتخاب کنید (انگلیسی و بدون فاصله).',
+    'send_user_id'=>"👤 | شناسه کاربری (آیدی عددی) کاربر مورد نظر را ارسال کنید:",
+    'enter_decrease_amount'=>"📉 | مبلغ مورد نظر برای کسر از کیف پول کاربر را به تومان وارد کنید:",
+    'enter_increase_amount'=>"📈 | مبلغ مورد نظر برای افزودن به کیف پول کاربر را به تومان وارد کنید:",
+    'user_not_found'=>"🤔 | کاربری با این مشخصات در سیستم یافت نشد. لطفاً مجدداً بررسی کنید.",
+    'amount_decreased_from_your_wallet'=> "✅ | مبلغ AMOUNT تومان با موفقیت از حساب شما کسر شد.",
+    'amount_decreased_from_user_wallet'=>"✅ | مبلغ AMOUNT تومان با موفقیت از کیف پول کاربر کسر شد.",
+    'increase_wallet_cart_to_cart'=>"💳 | برای شارژ کیف پول، تصویر واضح رسید پرداخت را ارسال فرمایید:
 
-💰مبلغ: PRICE تومان
-🧑‍💻 نام و نام خانوادگی : NAME
-🎯 یوزرنیم : @USERNAME
-🎫 کد کاربری : <code>USER-ID</code>
-",
-    'out_of_connection_capacity'=>'ظرفیت این کانکشن پر شده است',
-    'out_of_server_capacity'=>'ظرفیت این سرور پر شده است',
-    'can_create_specific_account'=> "روی این پلن فقط AMOUNT اکانت میشه ساخت",
-    'buy_account_cart_to_cart'=>"♻️ عزیزم یه تصویر از فیش واریزی یا شماره پیگیری -  ساعت پرداخت - نام پرداخت کننده رو در یک پیام برام ارسال کن :
+شماره حساب:
+<code>ACCOUNT-NUMBER</code> - HOLDER-NAME
 
-🔰 <code>ACCOUNT-NUMBER</code> - HOLDER-NAME
+✅ | پس از تأیید پرداخت، مبلغ به صورت خودکار به کیف پول شما افزوده خواهد شد.",
+    'order_increase_sent'=>"✅ | درخواست شما برای شارژ کیف پول ثبت شد. لطفاً تا زمان تأیید نهایی و اعمال موجودی، شکیبا باشید.",
+    'please_send_only_image'=>"🖼️ | فرمت فایل ارسالی معتبر نیست. لطفاً فقط فایل تصویر ارسال کنید.",
+    'reached_main_menu'=>"🏠 | به منوی اصلی بازگشتید. برای ادامه، یکی از گزینه‌های زیر را انتخاب کنید.",
+    'increase_wallet_request_message'=>"📥 | گزارش: درخواست شارژ کیف پول
 
-✅ بعد از اینکه پرداختت تایید شد ( لینک سرور ) به صورت خودکار از طریق همین ربات برات ارسال میشه!",
-    'renew_ccount_cart_to_cart'=>"♻️ عزیزم یه تصویر از فیش واریزی یا شماره پیگیری -  ساعت پرداخت - نام پرداخت کننده رو در یک پیام برام ارسال کن :
+💰 | مبلغ: PRICE تومان
+👤 | نام: NAME
+🆔 | نام کاربری: @USERNAME
+🔢 | شناسه کاربری: <code>USER-ID</code>",
+    'out_of_connection_capacity'=>'⚠️ | ظرفیت این پلن به اتمام رسیده است. لطفاً پلن دیگری را امتحان کنید.',
+    'out_of_server_capacity'=>'⚠️ | ظرفیت این سرور تکمیل شده است. لطفاً سرور دیگری را انتخاب نمایید.',
+    'can_create_specific_account'=> "ℹ️ | روی این پلن، حداکثر می‌توان AMOUNT اکانت ایجاد کرد.",
+    'buy_account_cart_to_cart'=>"💳 | برای تکمیل خرید، تصویر واضح رسید پرداخت را ارسال فرمایید:
 
-🔰 <code>ACCOUNT-NUMBER</code> - HOLDER-NAME",
-    'order_buy_sent'=>"🛍 سفارشت با موفقیت ثبت شد.
-بعد از تایید برات ارسال میکنم ... 🥳",
-    'buy_custom_account_request'=>"💓 خرید پلن دلخواه ( TYPE )
-    
-▫️آیدی کاربر: USER-ID
-👨‍💼اسم کاربر: <a href='tg://user?id=USER-ID'>NAME</a>
-⚡️ نام کاربری: @USERNAME
-💰مبلغ پرداختی: PRICE تومان
-✏️ نام سرویس: REMARK
-🔋حجم سرویس: VOLUME گیگ
-⏰ مدت سرویس: DAYS روز",
-'buy_new_account_request'=>"❗️|💳 خرید جدید ( TYPE )
+شماره حساب:
+<code>ACCOUNT-NUMBER</code> - HOLDER-NAME
 
-▫️آیدی کاربر: USER-ID
-👨‍💼اسم کاربر: NAME
-⚡️ نام کاربری: USERNAME
-💰مبلغ پرداختی: PRICE تومان
-🚦سرور: SERVERNAME
-✏️ نام سرویس: REMARK
-🔋حجم سرویس: VOLUME گیگ
-⏰ مدت سرویس: DAYS روز",
-'buy_new_much_account_request'=>"❗️|💳 خرید جدید ( TYPE )
+✅ | پس از تأیید پرداخت، مشخصات سرویس به صورت آنی برای شما ارسال خواهد شد.",
+    'renew_ccount_cart_to_cart'=>"💳 | برای نهایی کردن تمدید، تصویر واضح رسید پرداخت را ارسال فرمایید:
 
-▫️آیدی کاربر: USER-ID
-👨‍💼اسم کاربر: NAME
-⚡️ نام کاربری: USERNAME
-💰مبلغ پرداختی: PRICE تومان
-🏖 تعداد اکانت: ACCOUNT-COUNT
-✏️ نام سرویس: REMARK",
-'invite_buy_new_account'=>"👨‍👦‍👦 خرید ( زیر مجموعه )
+شماره حساب:
+<code>ACCOUNT-NUMBER</code> - HOLDER-NAME",
+    'order_buy_sent'=>"🛍️ | سفارش شما با موفقیت ثبت شد. سیستم در حال آماده‌سازی سرویس شماست و به زودی مشخصات ارسال خواهد شد.",
+    'buy_custom_account_request'=>"🌟 | ثبت سفارش: سرویس سفارشی (TYPE)
 
-🧝‍♂️آیدی کاربر: USER-ID
-🛡اسم کاربر: NAME
-🔖 نام کاربری: USERNAME
-💰مبلغ پرداختی: PRICE تومان
-🔮 نام سرویس: REMARK
-💮 سفارش: FILENAME",
-    'renew_order_sent'=>"✅| دوست عزیز ، درخواستت با موفقیت ثبت شد، بعد از بررسی و تمدید ادمین کانفیگ رو برات میفرستم ممنون از صبوریت 
-    
-🚪 /start",
-'renew_account_request_message'=>"♻️ تمدید سرویس ( TYPE )
+▫️ | شناسه کاربر: USER-ID
+👤 | نام کاربر: <a href='tg://user?id=USER-ID'>NAME</a>
+🆔 | نام کاربری: @USERNAME
+💰 | مبلغ: PRICE تومان
+✏️ | نام سرویس: REMARK
+📦 | حجم: VOLUME گیگ
+⏳ | مدت: DAYS روز",
+    'buy_new_account_request'=>"🛒 | ثبت سفارش: سرویس جدید (TYPE)
 
-▫️آیدی کاربر: USER-ID
-👨‍💼اسم کاربر: NAME
-⚡️ نام کاربری: USERNAME
-💰مبلغ پرداختی: PRICE تومان
-✏️ نام سرویس: REMARK
-🔋حجم سرویس: VOLUME گیگ
-⏰ مدت سرویس: DAYS روز",
-'increase_account_request_message'=>"⏰ درخواست افزایش ( TYPE سرویس )
+▫️ | شناسه کاربر: USER-ID
+👤 | نام کاربر: NAME
+🆔 | نام کاربری: USERNAME
+💰 | مبلغ: PRICE تومان
+🌍 | سرور: SERVERNAME
+✏️ | نام سرویس: REMARK
+📦 | حجم: VOLUME گیگ
+⏳ | مدت: DAYS روز",
+    'buy_new_much_account_request'=>"🛍️ | ثبت سفارش: خرید انبوه (TYPE)
 
-▫️آیدی کاربر: USER-ID
-👨‍💼اسم کاربر: NAME
-⚡️ نام کاربری: USERNAME
-🎈 نام سرویس: REMARK
-🔋TYPE افزایش: INCREASE گیگ/روز
-💰قیمت: PRICE تومان",
-    'waiting_message'=>'⏳ در حال انتظار ...',
-    'join_channel_message'=>"❌ برای استفاده از ربات حتما باید در کانال زیر عضو شوید:
-    
-✅ بعد از اینکه عضو شدید روی دکمه عضو شدم بزنید
+▫️ | شناسه کاربر: USER-ID
+👤 | نام کاربر: NAME
+🆔 | نام کاربری: USERNAME
+💰 | مبلغ: PRICE تومان
+🔢 | تعداد: ACCOUNT-COUNT
+✏️ | نام سرویس: REMARK",
+    'invite_buy_new_account'=>"🤝 | گزارش: خرید توسط زیرمجموعه
 
-",
-    'bot_is_updating'=> "🌛ربات در حال بروزرسانی می باشد ...",
-    'select_one_to_show_detail'=> ' 🔅 یکی از سرویس هاتو انتخاب کن و مشخصات کاملش رو ببین :',
-    'you_dont_have_config'=>'عزیزم هیچ سفارشی نداری 🙁 باید یه کانفیگ خریداری کنی',
-    'no_order_found'=> "موردی یافت نشد",
-    'config_details_message'=>"وضعیت کانفیگ: STATE
-    
-🔮 نام کانفیگ : NAME
+▫️ | شناسه کاربر: USER-ID
+👤 | نام کاربر: NAME
+🆔 | نام کاربری: USERNAME
+💰 | مبلغ: PRICE تومان
+🔮 | نام سرویس: REMARK
+💮 | سفارش: FILENAME",
+    'renew_order_sent'=>"✅ | درخواست تمدید شما ثبت شد. به محض تکمیل فرآیند، نتیجه به شما اطلاع داده خواهد شد.",
+    'renew_account_request_message'=>"♻️ | ثبت درخواست: تمدید سرویس (TYPE)
 
-لینک اتصال: CONNECT-LINK
+▫️ | شناسه کاربر: USER-ID
+👤 | نام کاربر: NAME
+🆔 | نام کاربری: USERNAME
+💰 | مبلغ: PRICE تومان
+✏️ | نام سرویس: REMARK
+📦 | حجم: VOLUME گیگ
+⏳ | مدت: DAYS روز",
+    'increase_account_request_message'=>"➕ | ثبت درخواست: ارتقاء سرویس (TYPE)
 
-لینک سابسکریبشن: SUB-LINK
-⁮⁮ ⁮⁮ ⁮⁮ ⁮⁮
-",
-    'please_wait_message'=>"🙃 | لطفا منتظر باشید",
-    'send_only_number'=> "😡 | مگه نمیگم فقط عدد بفرس نمیفهمی؟ یا خودتو زدی به نفهمی؟",
-    'change_bot_settings_message'=>'🔰هرکدوم از امکانات رو اگه تو ربات استفاده ای نداره ( خاموش ) کن !',
-    'saved_successfuly'=>"✅|با موفقیت ذخیره شد",
-    'invited_user_joined_message'=>"😍|تبریک یه نفر با لینک شما وارد ربات شد",
-    'please_select_from_below_buttons'=>"🔘|لطفا فقط از کلید زیر استفاده کنید",
-    'use_iranian_number_only'=>"🔘|لطفا فقط با شماره ایرانی اقدام کنید",
-    'phone_confirmed'=>"✅|شماره شما با موفقیت تأیید شد",
-    'send_your_phone_number'=>"سلام عزیزم، برای استفاده از ربات شماره تماس خود را با استفاده از کلید زیر ارسال کنید 👇",
-    'start_message'=>'سلااام به ربات ویزویز خوش اومدی 🫡🌸
-    
-ما اینجاییم تا شما را بدون هیچ محدویتی به شبکه جهانی متصل کنیم ❤️
+▫️ | شناسه کاربر: USER-ID
+👤 | نام کاربر: NAME
+🆔 | نام کاربری: USERNAME
+🎈 | نام سرویس: REMARK
+🔋 | نوع ارتقاء: INCREASE گیگ/روز
+💰 | هزینه: PRICE تومان",
+    'waiting_message'=>'⏳ | لطفاً چند لحظه صبر کنید...',
+    'join_channel_message'=>"🔔 | برای دسترسی به امکانات ربات، عضویت در کانال رسمی SWITCH VP الزامی است.
 
-✅ کیفیت در ساخت انواع کانکشن ها
-📡 برقرای امنیت در ارتباط شما
-☎️ پشتیبانی تا روز آخر 
+✨ @SwitchVp ✨
 
-🚪 /start',
-    'new_member_joined'=>"📢 | یه گل جدید عضو ربات شد :
+پس از عضویت، دکمه زیر را برای ادامه انتخاب کنید.",
+    'bot_is_updating'=> "⚙️ | ربات در حال به‌روزرسانی برای ارائه خدمات بهتر است. لطفاً چند دقیقه دیگر دوباره تلاش کنید.",
+    'select_one_to_show_detail'=> '📲 | برای مشاهده جزئیات و مدیریت، سرویس مورد نظر را از لیست زیر انتخاب کنید:',
+    'you_dont_have_config'=>'📂 | شما در حال حاضر هیچ سرویس فعالی ندارید. برای شروع، یک سرویس جدید خریداری کنید.',
+    'no_order_found'=> "📂 | هیچ موردی یافت نشد.",
+    'config_details_message'=>"✨ مشخصات سرویس شما ✨
 
-نام و نام خانوادگی: FULLNAME
-نام کاربری: @USERNAME
-آیدی عددی: USERID
+🔹 نام سرویس: <code>NAME</code>
+🔸 وضعیت: STATE
 
-به نظرم یه پیام براش بفرست مثلا ( تبلیغی یا خوش آمد گویی ) 😍",
-    "not_joine_yet"=>"هنوز که عضو کانال نشدی",
-    'insert_discount_code'=>"🎁|کد تخفیف تو را وارد کن:",
-    "not_valid_discount_code"=>"😔|کد تخفیفی که وارد کردی معتبر نیس",
-    'valid_discount_code'=>"✅|کد تخفیف با موفقیت استفاده شد
-مقدار تخفیف AMOUNT تومان",
-'used_discount_code'=>"☑️|🎁 کد تخفیف استفاده شد
+🔗 لینک اتصال:
+<code>CONNECT-LINK</code>
 
-🔰آیدی کاربر: USERID
-👨‍💼اسم کاربر: NAME
-⚡️ نام کاربری: USERNAME
-🎁 کد تخفیف: DISCOUNTCODE
-💰مقدار تخفیف: AMOUNT تومان
-⁮⁮ ⁮⁮",
-"send_config_uuid"=>"❗️| لینک کانفیگ یا uuid رو برام بفرس اطلاعات کامل رو تحویلت بدم 🤭",
-'not_correct_text'=>"متن وارد شده معتبر نمی باشد",
-'receving_information'=>"♻️در حال دریافت جزییات ... ",
-'request_agency_message'=>"درخواست نمایندگی
+📋 لینک اشتراک (Sub):
+<code>SUB-LINK</code>
 
-🔰آیدی کاربر: USERID
-👨‍💼اسم کاربر: NAME
-⚡️ نام کاربری: USERNAME
-⁮⁮ ⁮⁮",
-    'agency_request_sent'=>"درخواست شما با موفقیت ارسال شد، لطفا منتظر باشید!⁮⁮ ⁮⁮",
-    'agency_request_already_sent'=>"درخواست شما قبلاً ارسال شده، لطفا منتظر باشید!⁮⁮ ⁮⁮",
-    'agency_request_declined'=>"🥺 درخواست شما برای نمایندگی رد گردید",
-    'agency_request_approved'=>"✅ درخواست شما برای نمایندگی تأیید شد",
-    'send_agent_discount_percent' =>"لطفا مقدار تخفیف این نمایندگی را  به صورت درصد وارد کنید، مثلا 10",
-    'agent_setting_message' =>" 🧚🏻‍♀️ نماینده محترم:
+با لمس هر لینک، محتوای آن به صورت خودکار کپی می‌شود.",
+    'please_wait_message'=>"⏳ | در حال پردازش درخواست... لطفاً شکیبا باشید.",
+    'send_only_number'=> "⚠️ | ورودی نامعتبر است. لطفاً در این بخش فقط عدد وارد کنید.",
+    'change_bot_settings_message'=>'⚙️ | از این پنل می‌توانید تنظیمات اصلی ربات را مدیریت کرده و امکانات را فعال یا غیرفعال نمایید.',
+    'saved_successfuly'=>"✅ | تغییرات با موفقیت ذخیره شد.",
+    'invited_user_joined_message'=>"🏆 | عالی! یک نفر از طریق لینک دعوت شما به ما پیوست. از اینکه در رشد خانواده SWITCH VP سهیم هستید، سپاسگزاریم!",
+    'please_select_from_below_buttons'=>"👇 | لطفاً برای ادامه، فقط از گزینه‌های موجود در منو استفاده کنید.",
+    'use_iranian_number_only'=>"🇮🇷 | برای احراز هویت، استفاده از شماره‌های معتبر ایران الزامی است.",
+    'phone_confirmed'=>"✅ | شماره تلفن شما با موفقیت تأیید و ثبت گردید.",
+    'send_your_phone_number'=>"سلام! برای استفاده از خدمات SWITCH VP و آغاز یک تجربه امن، لطفاً با استفاده از دکمه زیر، شماره تماس خود را ارسال کنید.",
+    'start_message'=>"💎 به دنیای اینترنت آزاد با SWITCH VP خوش آمدید! 💎
 
-از این بخش میتوانید خرید تکی و خرید انبوه داشته باشید و همچنین کانفیگ های خریداری شده را مدیریت کنید",
-    'selling_is_off'=>"فعلا فروش نداریم",
-    'no_server_available'=>"😔 | عزیز دلم هیچ سرور فعالی نداریم لطفا بعدا مجدد تست کن",
-    'buy_sub_select_location' => '  1️⃣ مرحله یک:
+ما دروازه‌ی شما برای عبور از محدودیت‌ها با بالاترین سطح کیفیت و امنیت هستیم. با ما، اتصالی پایدار، پرسرعت و بدون مرز را تجربه کنید.
 
-لوکیشن مدنظرت رو برا خرید انتخاب کن: 😊',
-    'the_bot_in_not_admin' => "😡|ای بابا ،ربات هنوز تو کانال عضو نشده، اول ربات رو تو کانال ادمین کن و آیدیش رو بفرست",
-    'category_not_avilable'=>"هیچ دسته بندی برای این سرور وجود ندارد",
-    'receive_categories'=>"♻️ | دریافت دسته بندی ...",
-    'buy_sub_select_category'=> "2️⃣ مرحله دوم:
+⚡️ سرعت و پایداری بی‌نظیر
+🛡️ امنیت مطلق با رمزنگاری پیشرفته
+👨‍💻 پشتیبانی تخصصی، همیشه در کنار شما
 
-دسته بندی مورد نظرت رو انتخاب کن 🤭",
-    'no_plan_available'=>"💡پلنی در این دسته بندی وجود ندارد",
-    'receive_plans'=>"📍در حال دریافت لیست پلن ها",
-    'buy_sub_select_plan'=> "3️⃣ مرحله سه:
+برای شروع، از منوی زیر اقدام کنید:",
+    'new_member_joined'=>"🎉 | یک کاربر جدید به خانواده SWITCH VP پیوست:
 
-یکی از پلن هارو انتخاب کن و برو برای پرداختش 🤲 🕋", 
-    'buy_custom_plan'=>'➕ پلن دلخواه تو بخر',
-    'select_one_plan_to_edit'=>"یکی از پلن ها رو انتخاب کن تا برات ویرایشش کنم", 
-    'enter_account_amount' => "♻️ تعداد اکانت درخواستی رو وارد کن حداکثر هربار 6 عدد:
+👤 | نام: FULLNAME
+🆔 | نام کاربری: @USERNAME
+🔢 | شناسه: <code>USERID</code>",
+    'not_joine_yet'=>"⚠️ | شما هنوز در کانال رسمی ما (@SwitchVp) عضو نشده‌اید. لطفاً ابتدا عضو شوید و سپس مجدداً تلاش کنید.",
+    'insert_discount_code'=>"🎁 | اگر کد تخفیف در اختیار دارید، آن را در این قسمت وارد نمایید:",
+    'not_valid_discount_code'=>"😔 | کد تخفیف وارد شده معتبر نیست، منقضی شده یا قبلاً استفاده شده است.",
+    'valid_discount_code'=>"✅ | کد تخفیف شما با موفقیت اعمال شد و مبلغ AMOUNT تومان از فاکتور نهایی کسر گردید.",
+    'used_discount_code'=>"☑️ | گزارش: استفاده از کد تخفیف
 
-⚠️ | نکته: در صورت وارد کردن به مقدار بالا احتمالا اکانت ساخته نشود و پنل x-ui گیر کند",
-    'send_positive_number'=>"لطفا عددی بزرگتر از 0 وارد کنید",
-    'buy_subscription_detail'=>"〽️ نام پلن: PLAN-NAME
-        ➖➖➖➖➖➖➖
-        💎 قیمت پنل : PRICE
-        ➖➖➖➖➖➖➖
-        📃 توضیحات :
-        DESCRIPTION
-        ➖➖➖➖➖➖➖",
-    'buy_much_subscription_detail'=>"〽️ نام پلن: PLAN-NAME
-        تعداد اکانت: ACCOUNT-COUNT
-        قیمت پنل: PRICE
-        ➖➖➖➖➖➖➖
-        💎 قیمت کل : TOTAL-PRICE
-        ➖➖➖➖➖➖➖
-        📃 توضیحات :
-        DESCRIPTION
-        ➖➖➖➖➖➖➖",
-    'buy_custom_subscription_detail'=>"〽️ نام پلن: PLAN-NAME
-        حجم اختصاصی: VOLUME GB
-        مدت اختصاصی: DAYS روز
-        ➖➖➖➖➖➖➖
-        💎 قیمت پنل : PRICE
-        ➖➖➖➖➖➖➖
-        📃 توضیحات :
-        DESCRIPTION
-        ➖➖➖➖➖➖➖",
-    "agents_list" => "🔍 لیست نمایندگان:
+👤 | کاربر: NAME (@USERNAME)
+🔢 | شناسه: USERID
+🎁 | کد: DISCOUNTCODE
+💰 | مبلغ تخفیف: AMOUNT تومان",
+    'send_config_uuid'=>"🔎 | برای استعلام وضعیت سرویس، لینک اتصال یا شناسه (UUID) آن را ارسال کنید.",
+    'not_correct_text'=>" ورودی شما معتبر نمی‌باشد. لطفاً مجدداً تلاش کنید.",
+    'receving_information'=>"⏳ | در حال دریافت اطلاعات... لطفاً شکیبا باشید.",
+    'request_agency_message'=>"🤝 | گزارش: درخواست همکاری
 
-جهت مشاده آمار فروش نمایندگان روی اسم نماینده کلیک کنید، همچنین میتوانید برای نماینده درصد تعیین کنید یا آن را از لیست نمایندگان خارج کنید",
-    'agent_deleted_successfuly'=>"نمایندگی با موفقیت حذف شد",
-    'agent_details'=>'🙎‍♂️اطلاعات نماینده AGENT-NAME
+👤 | کاربر: NAME (@USERNAME)
+🔢 | شناسه: USERID",
+    'agency_request_sent'=>"✅ | درخواست همکاری شما ثبت شد. نتیجه پس از بررسی توسط کارشناسان، به شما اطلاع داده خواهد شد.",
+    'agency_request_already_sent'=>"⏳ | شما قبلاً درخواست همکاری ارسال کرده‌اید و در صف بررسی قرار دارد. لطفاً منتظر بمانید.",
+    'agency_request_declined'=>"❌ | پس از بررسی‌های انجام شده، متاسفانه در حال حاضر شرایط همکاری با شما فراهم نیست. از علاقه شما سپاسگزاریم.",
+    'agency_request_approved'=>"🎉 | تبریک! درخواست همکاری شما تأیید شد. به خانواده بزرگ نمایندگان SWITCH VP خوش آمدید.",
+    'send_agent_discount_percent' =>"📊 | لطفاً درصد تخفیف نماینده را به صورت عدد وارد کنید (مثال: 10 برای ۱۰٪).",
+    'agent_setting_message' =>"💼 پنل همکاری SWITCH VP
 
-سمت راست درآمد و سمت چپ تعداد خرید نماینده می باشد',
-    'send_config_remark'=>"لطفا ریمارک کانفیگ را وارد کنید",
-    'forward_your_message'=>"لطفا پیام مورد نظر خود را به ربات فروارد کنید",
-    "enter_ticket_title"=>"💠لطفا موضوع تیکت را ارسال کنید!",
-    "enter_ticket_description"=> "💠لطفا متن و یا عکس تیکت را بصورت ساده و مختصر ارسال کنید!",
-    "sent_config_to_user"=> '✅ کانفیگ و براش ارسال کردم
-ریمارک: REMARK
-حجم سرویس: VOLUME گیگ
-مدت زمان سرویس: DAYS روز',
-    "renewed_config_to_user"=> '✅ کانفیگ و براش تمدید کردم
-ریمارک: REMARK
-حجم سرویس: VOLUME گیگ
-مدت زمان سرویس: DAYS روز',
-    'sending_config_to_user'=>'🚀 | 😍 در حال ارسال کانفیگ به مشتری ...',
-    'config_not_found'=>"مشکلی پیش اومده، دوباره از نو انجام بده",
-    'incorrect_config_name'=>"😡|اسم وارد شده معتبر نمی باشد",
-    'pay_with_tron_wallet'=>"♻️ عزیزم مبلغ AMOUNT ترون رو به والت زیر ارسال کن و تکسید آیدی واریزی ترون رو برام ارسال کن :
+نماینده گرامی، از این بخش می‌توانید برای کاربران خود سرویس تهیه کرده و سرویس‌های فعال را مدیریت نمایید.",
+    'selling_is_off'=>"🔴 | فروش سرویس‌ها موقتاً متوقف شده است. برای اطلاع از زمان شروع مجدد، کانال رسمی ما را دنبال کنید.",
+    'no_server_available'=>"😔 | متاسفانه در حال حاضر تمام سرورها در وضعیت اشباع قرار دارند. تیم فنی در حال افزودن ظرفیت جدید است.",
+    'buy_sub_select_location' => "1️⃣ مرحله اول: انتخاب لوکیشن
 
-🔰 <code>TRON-WALLET</code>",
-    'incorrect_tax_id'=>"تکسید آیدی وارد شده نامعتبر است",
-    'used_tax_id'=>"این تکسید آیدی قبلا استفاده شده است",
-    'in_review_tax_id'=>"تراکنش شما در صف بررسی قرار گرفت",
-    'user_taxid_rejected'=>"تراکنش ناموفق TYPE (ترون)
-    
-آیدی کاربر: USERID
-اسم: NAME
-یوزرنیم: USERNAME
+لطفاً موقعیت جغرافیایی سرور مورد نظر را انتخاب کنید.",
+    'the_bot_in_not_admin' => "⚠️ | ربات دسترسی ادمین در کانال را ندارد. لطفاً ابتدا ربات را ادمین کرده و دسترسی لازم را اعطا فرمایید.",
+    'category_not_avilable'=>"📂 | در حال حاضر هیچ دسته‌بندی برای این سرور تعریف نشده است.",
+    'receive_categories'=>"⏳ | در حال دریافت لیست دسته‌بندی‌ها...",
+    'buy_sub_select_category'=> "2️⃣ مرحله دوم: انتخاب نوع سرویس
 
-تکسید آیدی: TAXID
+لطفاً نوع سرویس مورد نظر را از لیست زیر انتخاب کنید.",
+    'no_plan_available'=>"💡 | در این دسته‌بندی، پلن فعالی برای فروش وجود ندارد.",
+    'receive_plans'=>"⏳ | در حال دریافت لیست پلن‌ها...",
+    'buy_sub_select_plan'=> "3️⃣ مرحله سوم: انتخاب پلن نهایی
 
-<b>بعد از 5 تلاش رد گردید</b>",
-    'your_taxid_rejected'=>"تراکنش TYPE شما با تکسید آیدی: TAXID
+یکی از پلن‌های زیر را برای تکمیل فرآیند خرید انتخاب کنید.",
+    'buy_custom_plan'=>'➕ ساخت سرویس سفارشی',
+    'select_one_plan_to_edit'=>"✏️ | برای ویرایش، پلن مورد نظر را از لیست زیر انتخاب کنید.",
+    'enter_account_amount' => "🔢 | لطفاً تعداد سرویس‌های درخواستی را وارد کنید (حداکثر ۶ عدد در هر بار):",
+    'send_positive_number'=>"⚠️ | لطفاً یک عدد صحیح و بزرگتر از صفر وارد کنید.",
+    'buy_subscription_detail'=>"⭐ جزئیات پلن انتخابی ⭐
 
-<b>بعد از 5 تلاش رد شد</b>",
-    'incorrect_user_taxid_rejected'=>"تراکنش ناموفق TYPE (ترون)
-    
-آیدی کاربر: USERID
-اسم: NAME
-یوزرنیم: USERNAME
+🏷️ نام پلن: PLAN-NAME
+💳 قیمت: PRICE تومان
 
-تکسید آیدی: TAXID
+📃 توضیحات:
+DESCRIPTION",
+    'buy_much_subscription_detail'=>"⭐ جزئیات خرید انبوه ⭐
 
-<b>به دلیل ثبت تراکنش نادرست رد شد</b>",
-    'your_incorrect_taxid_rejected'=>"تراکنش TYPE شما با تکسید آیدی: TAXID
+🏷️ نام پلن: PLAN-NAME
+🔢 تعداد: ACCOUNT-COUNT
+💳 قیمت واحد: PRICE تومان
+💰 قیمت کل: TOTAL-PRICE تومان
 
-<b>به دلیل ثبت تراکنش نادرست رد شد</b>",
-    'partially_paid_user_taxid'=>"تراکنش ناموفق TYPE (ترون)
-    
-آیدی کاربر: USERID
-اسم: NAME
-یوزرنیم: USERNAME
+📃 توضیحات:
+DESCRIPTION",
+    'buy_custom_subscription_detail'=>"⭐ جزئیات سرویس سفارشی ⭐
 
-تکسید آیدی: TAXID
+📦 حجم: VOLUME گیگابایت
+⏳ مدت: DAYS روز
+💳 قیمت نهایی: PRICE تومان
 
-<b>به دلیل عدم مطابقت مبلغ تراکنش رد شد</b>",
-    'you_have_partially_paid'=>"تراکنش TYPE شما با تکسید آیدی: TAXID
+📃 توضیحات:
+DESCRIPTION",
+    "agents_list" => "👥 | لیست نمایندگان فروش
 
-<b>به دلیل عدم مطابقت مبلغ تراکنش رد شد</b>",
-    'agent_discount_settings'=>"مدیریت تخفیف های نماینده AGENT-NAME",
-    'config_doesnt_exist'=>"کانفیگ یافت نشد"
+برای مشاهده آمار فروش و مدیریت هر نماینده، روی نام آن کلیک کنید.",
+    'agent_deleted_successfuly'=>"✅ | نماینده با موفقیت از لیست حذف شد.",
+    'agent_details'=>'📊 | آمار فروش نماینده: AGENT-NAME
+
+(درآمد | تعداد خرید)',
+    'send_config_remark'=>"✏️ | لطفاً یک نام برای این سرویس وارد کنید (جهت شناسایی راحت‌تر).",
+    'forward_your_message'=>"📨 | لطفاً پیام مورد نظر را جهت ارسال، به ربات فوروارد کنید.",
+    'enter_ticket_title'=>"💬 | لطفاً موضوع تیکت پشتیبانی را به طور خلاصه و دقیق وارد کنید.",
+    'enter_ticket_description'=> "✍️ | لطفاً درخواست خود را به طور کامل شرح دهید. در صورت نیاز، می‌توانید تصویر نیز ارسال کنید تا مشکل سریع‌تر بررسی شود.",
+    'sent_config_to_user'=> '✅ | سرویس جدید با موفقیت ایجاد و برای کاربر ارسال شد.
+نام: REMARK
+حجم: VOLUME گیگ
+مدت: DAYS روز',
+    'renewed_config_to_user'=> '✅ | سرویس کاربر با موفقیت تمدید شد.
+نام: REMARK
+حجم: VOLUME گیگ
+مدت: DAYS روز',
+    'sending_config_to_user'=>'🚀 | در حال آماده‌سازی و ارسال سرویس برای مشتری...',
+    'config_not_found'=>"❌ | خطایی در پردازش رخ داد یا سرویس یافت نشد. لطفاً فرآیند را از ابتدا شروع کنید.",
+    'incorrect_config_name'=>"⚠️ | نام وارد شده معتبر نیست. لطفاً فقط از حروف و اعداد انگلیسی بدون فاصله استفاده کنید.",
+    'pay_with_tron_wallet'=>"🪙 | لطفاً مبلغ AMOUNT تتر (TRC20) را به آدرس زیر واریز کرده و سپس هش (TxID) تراکنش را ارسال کنید:
+
+<code>TRON-WALLET</code>
+
+هش را لمس کنید تا به صورت خودکار کپی شود.",
+    'incorrect_tax_id'=>"❌ | هش تراکنش (TxID) وارد شده نامعتبر است. لطفاً آن را به دقت بررسی و مجدداً ارسال کنید.",
+    'used_tax_id'=>"⚠️ | این هش تراکنش (TxID) قبلاً در سیستم ثبت و استفاده شده است.",
+    'in_review_tax_id'=>"⏳ | تراکنش شما دریافت شد و جهت بررسی در صف قرار گرفت. نتیجه به زودی به شما اطلاع داده خواهد شد.",
+    'user_taxid_rejected'=>"❌ | گزارش: تراکنش ناموفق (TYPE)
+
+کاربر: USERID / NAME / @USERNAME
+هش: TAXID
+دلیل: عدم تایید خودکار.",
+    'your_taxid_rejected'=>"❌ | تراکنش شما (TYPE) با هش: TAXID
+
+متاسفانه تراکنش شما تأیید نشد. لطفاً با پشتیبانی در تماس باشید.",
+    'incorrect_user_taxid_rejected'=>"❌ | گزارش: تراکنش ناموفق (TYPE)
+
+کاربر: USERID / NAME / @USERNAME
+هش: TAXID
+دلیل: ثبت تراکنش نادرست.",
+    'your_incorrect_taxid_rejected'=>"❌ | تراکنش شما (TYPE) با هش: TAXID به دلیل ثبت تراکنش نادرست، رد شد.",
+    'partially_paid_user_taxid'=>"❌ | گزارش: تراکنش ناموفق (TYPE)
+
+کاربر: USERID / NAME / @USERNAME
+هش: TAXID
+دلیل: عدم تطابق مبلغ واریزی.",
+    'you_have_partially_paid'=>"❌ | تراکنش شما (TYPE) با هش: TAXID به دلیل عدم تطابق مبلغ واریزی با فاکتور، رد شد.",
+    'agent_discount_settings'=>"📊 | مدیریت تخفیف‌های نماینده: AGENT-NAME",
+    'config_doesnt_exist'=>"⚠️ | سرویسی با این مشخصات یافت نشد."
 ];
 
 $buttonValues = [
-    'bot_reports'=>"📉 آمار کلی ربات",
-    'message_to_user'=>"📞 پیام خصوصی",
-    'user_reports'=>"🔑 اطلاعات کاربر",
-    'admins_list'=>"👤 لیست ادمین ها",
-    'increase_wallet'=>"💵 افزایش موجودی",
-    'decrease_wallet'=>"💸 کاهش موجودی",
-    'create_account'=>"⌨️ ایجاد اکانت انبوه",
-    'ban_user'=>"❌ مسدود کردن کاربر",
-    'unban_user'=>"✅ آزاد کردن کاربر",
-    'server_settings'=>'🚦مدیریت و تنظیمات سرورها',
-    'categories_settings'=>'🗂 مدیریت دسته ها',
-    'plan_settings'=>'🪣 مدیریت پلن ها',
-    'discount_settings'=>"🎁 مدیریت تخفیف ها",
-    'main_button_settings'=>"🕹 مدیریت دکمه ها ",
-    'gateways_settings'=>'💳 تنظیمات درگاه و کانال',
-    'bot_settings'=>'⚙️ تنظیمات ربات',
-    'tickets_list'=>'📪 تیکت ها',
-    'message_to_all'=>"📨 ارسال پیام همگانی",
-    'forward_to_all'=>"📨 فروارد پیام همگانی",
-    'back_to_main'=>'⤵️ برگرد به منوی اصلی ',  
-    'cart_to_cart'=>"💳 کارت به کارت",
-    'now_payment_gateway'=>"💳 درگاه NowPayment",
-    'zarinpal_gateway'=> "💳 درگاه زرین پال",
-    'nextpay_gateway'=>"💳 درگاه نکست پی",
-    'weswap_gateway'=>"💳 درگاه ارزی ریالی",
+    'bot_reports'=>"📊 آمار و گزارشات",
+    'message_to_user'=>"✉️ ارسال پیام به کاربر",
+    'user_reports'=>"👤 اطلاعات کاربر",
+    'admins_list'=>"👨‍💻 مدیریت ادمین‌ها",
+    'increase_wallet'=>"💵 شارژ کیف پول",
+    'decrease_wallet'=>"💸 کسر از کیف پول",
+    'create_account'=>"➕ ساخت سرویس انبوه",
+    'ban_user'=>"🚫 مسدودسازی کاربر",
+    'unban_user'=>"✅ رفع مسدودیت",
+    'server_settings'=>'🌍 مدیریت سرورها',
+    'categories_settings'=>'🗂 مدیریت دسته‌بندی‌ها',
+    'plan_settings'=>'📋 مدیریت پلن‌ها',
+    'discount_settings'=>"🎁 مدیریت تخفیف‌ها",
+    'main_button_settings'=>"🕹️ مدیریت دکمه‌ها",
+    'gateways_settings'=>'💳 تنظیمات درگاه',
+    'bot_settings'=>'🤖 تنظیمات ربات',
+    'tickets_list'=>'📩 تیکت‌های دریافتی',
+    'message_to_all'=>"📢 ارسال پیام همگانی",
+    'forward_to_all'=>"📣 فوروارد همگانی",
+    'back_to_main'=>' بازگشت به منوی اصلی 🏠',
+    'cart_to_cart'=>"💳 پرداخت کارت به کارت",
+    'now_payment_gateway'=>"🌐 درگاه NowPayments",
+    'zarinpal_gateway'=> "💳 درگاه زرین‌پال",
+    'nextpay_gateway'=>"💳 درگاه نکست‌پی",
+    'weswap_gateway'=>"💳 درگاه ارزی",
     'approve' => 'تایید ✅',
     'approved' => 'تایید شد',
-    'decline' => 'عدم تایید ❌',
+    'decline' => 'رد کردن ❌',
     'declined' => 'رد شد',
-    'back_button'=> "برگشت 🔙",
-    'renew_connection_link'=>"🚷 قطع دسترسی و لینک جدید",
-    'update_config_connection'=>"⌛️ بروزرسانی کانفیگ",
-    'increase_config_volume'=>"🩸 افزایش حجم سرویس",
-    'increase_config_days'=>"📆 افزایش زمان سرویس",
-    'renew_config'=>'♻ تمدید سرویس',
+    'back_button'=> "بازگشت 🔙",
+    'renew_connection_link'=>"🔄 بروزرسانی لینک",
+    'update_config_connection'=>"⏳ بروزرسانی اشتراک",
+    'increase_config_volume'=>"➕ افزایش حجم",
+    'increase_config_days'=>"➕ افزایش زمان",
+    'renew_config'=>'♻️ تمدید سرویس',
     'change_config_location'=>'🌎 تغییر لوکیشن',
-    'selected_protocol'=>"🚦 پروتکل انتخابی",
-    'volume_left'=>"⏳ حجم باقیمانده:",
-    'expire_date'=>"⏰  تاریخ انقضاء: ",
-    'buy_date'=>"⏰  تاریخ خرید: ",
-    'plan_name'=>" 🚀 نام پلن:",
-    'on'=>"روشن ✅",
-    'off'=>"خاموش ❌",
+    'selected_protocol'=>"🚦 پروتکل:",
+    'volume_left'=>"🔋 حجم باقیمانده:",
+    'expire_date'=>"🗓️ تاریخ انقضا:",
+    'buy_date'=>"🛍️ تاریخ خرید:",
+    'plan_name'=>"🚀 نام پلن:",
+    'on'=>"روشن 🟢",
+    'off'=>"خاموش 🔴",
     'active'=>"فعال 🟢",
-    'deactive'=>"غیر فعال 🔴",
-    'send_phone_number'=>'☎️ ارسال شماره',
-    'send_message_to_user'=>"✉️ ارسال پیام به کاربر ",
-    'cancel' => '😪 منصرف شدم بیخیال',
-    'join_channel'=>"عضویت در کانال",
-    'have_joined'=>"عضو شدم ✅",
-    'gift_volume_day'=>"🎯 هدیه حجم و زمان",
-    'test_account'=>"🎁 دریافت اکانت تست ",
-    'invite_friends'=>"🏆 زیر مجموعه گیری",
-    'my_info'=>"🧑‍💼 حساب کاربری",
-    'my_subscriptions'=>'📱 کانفیگ های من',
-    'buy_subscriptions'=>'🛒  خرید کانفیگ جدید',
-    'shared_existence'=>"❕ موجودی اشتراکی ",
-    'individual_existence'=>"❗️ موجودی اختصاصی ",
-    'application_links'=>'🧩 آموزش اتصال',
-    'my_tickets'=>"📨 تیکت های من",
-    'search_config'=>"🪫 مشخصات کانفیگ",
-    'delete_config'=>"❌ حذف کانفیگ",
-    'pay_with_wallet' => "💰پرداخت با موجودی",
-    'request_agency' =>"🧑‍💼 درخواست نمایندگی 🧑‍💼",
-    'agency_setting' =>"➰ پنل همکاری ➰",
+    'deactive'=>"غیرفعال 🔴",
+    'send_phone_number'=>'📱 تایید شماره تماس',
+    'send_message_to_user'=>"✉️ ارسال پیام",
+    'cancel'=>'انصراف ✖️',
+    'join_channel'=>"🚀 عضویت در کانال",
+    'have_joined'=>"✅ عضو شدم",
+    'gift_volume_day'=>"🎁 هدیه ویژه",
+    'test_account'=>"🧪 دریافت سرویس تست",
+    'invite_friends'=>"🤝 دعوت از دوستان",
+    'my_info'=>"👤 پروفایل من",
+    'my_subscriptions'=>'📱 سرویس‌های من',
+    'buy_subscriptions'=>'🛒 خرید سرویس',
+    'shared_existence'=>"❕ موجودی اشتراکی",
+    'individual_existence'=>"❗️ موجودی اختصاصی",
+    'application_links'=>'📱 نرم‌افزارهای مورد نیاز',
+    'my_tickets'=>"📨 پشتیبانی",
+    'search_config'=>"🔎 استعلام سرویس",
+    'delete_config'=>"🗑️ حذف سرویس",
+    'pay_with_wallet'=>"💰 پرداخت از کیف پول",
+    'request_agency'=>"🤝 درخواست نمایندگی",
+    'agency_setting'=>"💼 پنل نمایندگان",
     'agent_one_buy'=>"➕ خرید تکی",
-    'agent_much_buy'=>"♾ خرید انبوه",
+    'agent_much_buy'=>"🛍️ خرید انبوه",
     'agent_bought_accounts'=>"تعداد خرید",
     'agent_joined_date'=>"تاریخ عضویت",
     'agent_agency_date'=>"تاریخ نمایندگی",
-    "agent_list"=>" 📍 مدیریت نمایندگان 📍",
-    'search_agent_config'=>"جستجوی کانفیگ",
-    'search_admin_config'=>"جستجوی کانفیگ کاربر",
-    'sharj'=>"✅ 💳 ارسال رسید - شارژ کیف پول",
-    "qr_config"=>"🔳 کیو آر کانفیگ",
-    "qr_sub"=>"🔳 کیو آر ساب",
-    'start_bot'=>"شروع ربات",
-    'enable_config'=>"فعال سازی کانفیگ",
-    'disable_config'=>"غیر فعال سازی کانفیگ",
-    "tron_gateway"=>"درگاه ترون",
-    'plan_discount'=>"روی پلن",
-    'server_discount'=>"روی سرور"
+    'agent_list'=>"📍 مدیریت نمایندگان",
+    'search_agent_config'=>"🔎 جستجوی سرویس نماینده",
+    'search_admin_config'=>"🔎 جستجوی سرویس کاربر",
+    'sharj'=>"💳 ارسال رسید",
+    'qr_config'=>"🔳 کد QR اتصال",
+    'qr_sub'=>"🔳 کد QR اشتراک",
+    'start_bot'=>"🔄 شروع مجدد",
+    'enable_config'=>"▶️ فعال‌سازی",
+    'disable_config'=>"⏸️ غیرفعال‌سازی",
+    'tron_gateway'=>"🪙 پرداخت با ارز دیجیتال",
+    'plan_discount'=>"تخفیف روی پلن",
+    'server_discount'=>"تخفیف روی سرور"
 ];
 ?>

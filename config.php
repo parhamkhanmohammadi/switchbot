@@ -10,16 +10,25 @@ if($connection->connect_error){
 $connection->set_charset("utf8mb4");
 
 function bot($method, $datas = []){
-    global $botToken;
+    global $botToken, $proxy;
     $url = "https://api.telegram.org/bot" . $botToken . "/" . $method;
     $ch = curl_init(); 
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($datas));
+    if (isset($proxy) && $proxy != "") {
+        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+        curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+    }
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     $res = curl_exec($ch);
     if (curl_error($ch)) {
         var_dump(curl_error($ch));
     } else {
+        return json_decode($res);
+    }
+}
         return json_decode($res);
     }
 }
